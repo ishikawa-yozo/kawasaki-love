@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>川崎愛♡検定</title>
+  <style>
+    /* ===== リセット & 基本 ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #b3e8ff 0%, #ffd6ec 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* ===== カード共通 ===== */
+    .card {
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: 0 12px 40px rgba(0, 120, 200, 0.18), 0 2px 8px rgba(255, 100, 160, 0.12);
+      padding: 36px 28px;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      animation: fadeIn 0.45s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hidden { display: none !important; }
+
+    /* ===== 共通テキスト ===== */
+    .subtitle {
+      font-size: 15px;
+      color: #888;
+      margin-top: 8px;
+      line-height: 1.7;
+    }
+
+    /* ===== スタート画面 ===== */
+    #start-screen .logo-emoji {
+      font-size: 64px;
+      display: block;
+      margin-bottom: 8px;
+      animation: heartbeat 1.4s ease infinite;
+    }
+    @keyframes heartbeat {
+      0%,100%{ transform: scale(1);   }
+      50%    { transform: scale(1.12);}
+    }
+
+    #start-screen h1 {
+      font-size: 30px;
+      font-weight: 900;
+      background: linear-gradient(90deg, #00a3e0, #ff4d94);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+    }
+
+    #start-screen .badge {
+      display: inline-block;
+      background: linear-gradient(90deg, #ff4d94, #ff85b8);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin: 10px 0 20px;
+      letter-spacing: 1px;
+    }
+
+    #start-screen .info-box {
+      background: linear-gradient(135deg, #e8f7ff, #ffe6f3);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin: 18px 0 26px;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.8;
+    }
+    #start-screen .info-box strong {
+      color: #ff4d94;
+    }
+
+    /* ===== ボタン共通 ===== */
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 15px 20px;
+      border: none;
+      border-radius: 50px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      letter-spacing: 0.5px;
+    }
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #00a3e0, #0072c6);
+      color: #fff;
+      box-shadow: 0 5px 18px rgba(0, 163, 224, 0.4);
+    }
+    .btn-primary:hover { box-shadow: 0 7px 24px rgba(0, 163, 224, 0.55); transform: translateY(-2px); }
+
+    .btn-pink {
+      background: linear-gradient(90deg, #ff4d94, #ff85b8);
+      color: #fff;
+      box-shadow: 0 5px 18px rgba(255, 77, 148, 0.35);
+    }
+    .btn-pink:hover { box-shadow: 0 7px 24px rgba(255, 77, 148, 0.5); transform: translateY(-2px); }
+
+    .btn-x {
+      background: #000;
+      color: #fff;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.25);
+    }
+    .btn-x:hover { box-shadow: 0 7px 24px rgba(0,0,0,0.35); transform: translateY(-2px); }
+
+    .btn-outline {
+      background: #fff;
+      color: #00a3e0;
+      border: 2.5px solid #00a3e0;
+      box-shadow: none;
+    }
+    .btn-outline:hover { background: #e8f7ff; }
+
+    /* ===== クイズ画面 ===== */
+    #quiz-screen .progress-wrap {
+      margin-bottom: 18px;
+    }
+    #quiz-screen .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    #quiz-screen .progress-bar {
+      height: 8px;
+      background: #eee;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    #quiz-screen .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00a3e0, #ff4d94);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+
+    #quiz-screen .q-number {
+      font-size: 13px;
+      font-weight: 700;
+      color: #00a3e0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    #quiz-screen .q-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: #2d2d2d;
+      line-height: 1.5;
+      margin-bottom: 26px;
+      min-height: 60px;
+    }
+
+    #quiz-screen .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      width: 100%;
+      padding: 15px 18px;
+      border: 2.5px solid #e0e0e0;
+      border-radius: 16px;
+      background: #fafafa;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: #00a3e0;
+      background: #e8f7ff;
+      transform: translateX(4px);
+    }
+    .option-btn .opt-label {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      font-size: 13px;
+      font-weight: 800;
+      color: #666;
+      flex-shrink: 0;
+      transition: background 0.2s, color 0.2s;
+    }
+    .option-btn:hover:not(:disabled) .opt-label {
+      background: #00a3e0;
+      color: #fff;
+    }
+    .option-btn.correct {
+      border-color: #00c65e;
+      background: #e6fff1;
+      color: #00933f;
+    }
+    .option-btn.correct .opt-label { background: #00c65e; color: #fff; }
+    .option-btn.wrong {
+      border-color: #ff4d4d;
+      background: #fff0f0;
+      color: #cc0000;
+    }
+    .option-btn.wrong .opt-label { background: #ff4d4d; color: #fff; }
+    .option-btn:disabled { cursor: default; }
+
+    /* フィードバック */
+    #feedback {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      display: none;
+    }
+    #feedback.show-correct { display: block; background: #e6fff1; color: #00933f; }
+    #feedback.show-wrong   { display: block; background: #fff0f0; color: #cc0000; }
+
+    #next-btn-wrap { margin-top: 20px; }
+
+    /* スコアインジケーター */
+    #quiz-screen .score-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 20px;
+    }
+    .score-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      transition: background 0.3s;
+    }
+    .score-dot.ok  { background: #00c65e; }
+    .score-dot.ng  { background: #ff4d4d; }
+
+    /* ===== 結果画面（合格） ===== */
+    #pass-screen .confetti-emoji {
+      font-size: 50px;
+      display: block;
+      margin-bottom: 6px;
+    }
+    #pass-screen .congrats-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #ff4d94;
+      margin-bottom: 4px;
+    }
+    #pass-screen .score-result {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+    #pass-screen .score-result span {
+      font-size: 22px;
+      font-weight: 900;
+      color: #00a3e0;
+    }
+
+    /* 認定証 */
+    .certificate {
+      position: relative;
+      border: 5px double #f0c040;
+      border-radius: 18px;
+      padding: 26px 20px;
+      background: linear-gradient(160deg, #fffef5 0%, #fff8e1 100%);
+      margin: 18px 0;
+      overflow: hidden;
+    }
+    .certificate::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border: 2px solid rgba(240, 192, 64, 0.35);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+    .cert-seal {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .cert-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #b8860b;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .cert-main {
+      font-size: 17px;
+      font-weight: 900;
+      color: #7a4f00;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .cert-name-area {
+      background: rgba(240,192,64,0.12);
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin: 12px 0;
+      font-size: 16px;
+      font-weight: 800;
+      color: #333;
+    }
+    .cert-body {
+      font-size: 13px;
+      color: #8a6500;
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .cert-footer {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 10px;
+    }
+    .cert-stars {
+      color: #f0c040;
+      font-size: 20px;
+      letter-spacing: 4px;
+    }
+
+    #pass-screen .btn-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    /* ===== 結果画面（不合格） ===== */
+    #fail-screen .fail-emoji {
+      font-size: 56px;
+      display: block;
+      margin-bottom: 10px;
+    }
+    #fail-screen h2 {
+      font-size: 22px;
+      font-weight: 900;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    #fail-screen .fail-score {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 18px;
+    }
+    #fail-screen .fail-score span {
+      font-size: 22px;
+      font-weight: 900;
+      color: #ff4d94;
+    }
+    #fail-screen .fail-msg {
+      background: linear-gradient(135deg, #ffe6f3, #e8f7ff);
+      border-radius: 16px;
+      padding: 18px;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+    #fail-screen .fail-msg strong { color: #ff4d94; }
+
+    #fail-screen .btn-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ===== フッター ===== */
+    .app-footer {
+      margin-top: 22px;
+      font-size: 11px;
+      color: #bbb;
+    }
+
+    /* ===== スマホ調整 ===== */
+    @media (max-width: 400px) {
+      .card { padding: 28px 18px; }
+      #start-screen h1 { font-size: 26px; }
+      #quiz-screen .q-text { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========== スタート画面 ========== -->
+<div id="start-screen" class="card">
+  <span class="logo-emoji">🌸</span>
+  <h1>川崎愛♡検定</h1>
+  <div class="badge">KAWASAKI LOVE TEST</div>
+  <p class="subtitle">あなたはどれだけ川崎を愛していますか？<br>全問正解を目指そう！</p>
+  <div class="info-box">
+    📋 全 <strong>5問</strong>・3択形式<br>
+    🏆 正解率 <strong>80%以上</strong>（5問中4問以上）で<br>
+    <strong>「名誉市民」</strong>に認定！
+  </div>
+  <button class="btn btn-primary" onclick="startQuiz()">🚀 検定スタート！</button>
+  <p class="app-footer">Powered by 川崎愛♡検定実行委員会</p>
+</div>
+
+<!-- ========== クイズ画面 ========== -->
+<div id="quiz-screen" class="card hidden">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progress-text">第 1 問 / 5問</span>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="q-number" id="q-number">Q 1</div>
+  <div class="q-text" id="q-text">問題文</div>
+
+  <div class="options" id="options"></div>
+
+  <div id="feedback"></div>
+  <div id="next-btn-wrap" class="hidden">
+    <button class="btn btn-primary" onclick="nextQuestion()">次の問題へ →</button>
+  </div>
+
+  <div class="score-indicator" id="score-dots"></div>
+</div>
+
+<!-- ========== 結果画面（合格） ========== -->
+<div id="pass-screen" class="card hidden">
+  <span class="confetti-emoji">🎉</span>
+  <div class="congrats-title">おめでとうございます！</div>
+  <div class="score-result">
+    あなたのスコア：<span id="pass-score">5</span> / 5問正解
+  </div>
+
+  <div class="certificate">
+    <span class="cert-seal">🏆</span>
+    <div class="cert-label">— 認 定 証 —</div>
+    <div class="cert-stars">★ ★ ★</div>
+    <div class="cert-main" style="margin-top:12px;">
+      あなたを川崎愛♡ある<br>
+      <span style="font-size:20px; color:#ff4d94;">名誉市民</span><br>
+      として認めます
+    </div>
+    <div class="cert-body">
+      川崎への深い愛と知識をもって<br>
+      この栄えある認定を授与いたします。
+    </div>
+    <div class="cert-stars">★ ★ ★</div>
+    <div class="cert-footer">川崎愛♡検定 実行委員会</div>
+  </div>
+
+  <div class="btn-wrap">
+    <button class="btn btn-x" onclick="shareX()">
+      𝕏 結果を X でシェアする
+    </button>
+    <button class="btn btn-outline" onclick="resetQuiz()">
+      🔄 もう一度チャレンジ
+    </button>
+  </div>
+  <p class="app-footer">Powered by 川崎愛♡検定実行委員会</p>
+</div>
+
+<!-- ========== 結果画面（不合格） ========== -->
+<div id="fail-screen" class="card hidden">
+  <span class="fail-emoji">😢</span>
+  <h2>残念！もう少し！</h2>
+  <div class="fail-score">
+    あなたのスコア：<span id="fail-score">3</span> / 5問正解
+  </div>
+  <div class="fail-msg">
+    惜しい！あと少しで<strong>名誉市民</strong>に認定されていました。<br><br>
+    川崎市の魅力はまだまだたくさんあります。<br>
+    もう一度チャレンジして、<br>
+    <strong>川崎愛</strong>を証明しましょう！💪
+  </div>
+  <div class="btn-wrap">
+    <button class="btn btn-pink" onclick="resetQuiz()">
+      🔥 もう一度挑戦する
+    </button>
+    <button class="btn btn-x" onclick="shareXFail()">
+      𝕏 結果を X でシェアする
+    </button>
+  </div>
+  <p class="app-footer">Powered by 川崎愛♡検定実行委員会</p>
+</div>
+
+<!-- ========== JavaScript ========== -->
+<script>
+  /* ===== クイズデータ ===== */
+  const quizData = [
+    {
+      q: '川崎駅前の地下街「アゼリア」の名前の由来にもなっている、川崎市の「市の花」は何でしょう？',
+      opts: ['① つつじ', '② ひまわり', '③ バラ'],
+      correct: 0,
+      explanation: '✅ 正解！川崎市の市の花は「つつじ」です。地下街「アゼリア」はつつじの英名 Azalea（アザレア）が由来です。'
+    },
+    {
+      q: '川崎市が誇るプロサッカークラブの名前は？',
+      opts: ['① 横浜F・マリノス', '② 川崎フロンターレ', '③ 湘南ベルマーレ'],
+      correct: 1,
+      explanation: '✅ 正解！川崎フロンターレは等々力陸上競技場を本拠地とし、J1リーグ屈指の強豪クラブです。'
+    },
+    {
+      q: '初詣の参拝客数が全国屈指で、川崎区にある有名なお寺はどこでしょう？',
+      opts: ['① 浅草寺', '② 成田山新勝寺', '③ 川崎大師（平間寺）'],
+      correct: 2,
+      explanation: '✅ 正解！川崎大師（平間寺）は毎年300万人以上の初詣客を誇る、神奈川県最大の参拝スポットです。'
+    },
+    {
+      q: '川崎発祥と言われる、ニンニクと唐辛子が効いた卵とじのラーメンは？',
+      opts: ['① 元祖ニュータンタンメン', '② 家系ラーメン', '③ 徳島ラーメン'],
+      correct: 0,
+      explanation: '✅ 正解！ニュータンタンメンは川崎生まれのご当地ラーメンで、ニンニクと唐辛子の効いたスタミナ系が特徴です。'
+    },
+    {
+      q: '川崎市の人口は、政令指定都市の中で何位でしょう？（2024年現在、約154万人）',
+      opts: ['① 第1位', '② 第6位', '③ 第10位'],
+      correct: 1,
+      explanation: '✅ 正解！約154万人の川崎市は、横浜・大阪・名古屋・札幌・福岡に次いで政令指定都市第6位の人口です。'
+    }
+  ];
+
+  /* ===== 状態管理 ===== */
+  let currentIdx = 0;
+  let score = 0;
+  let answers = []; // null=未回答, true=正解, false=不正解
+
+  /* ===== 画面切替 ===== */
+  function showScreen(id) {
+    ['start-screen','quiz-screen','pass-screen','fail-screen']
+      .forEach(s => document.getElementById(s).classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  /* ===== スタート ===== */
+  function startQuiz() {
+    currentIdx = 0;
+    score = 0;
+    answers = [];
+    showScreen('quiz-screen');
+    renderQuestion();
+    renderDots();
+  }
+
+  /* ===== 問題表示 ===== */
+  function renderQuestion() {
+    const total = quizData.length;
+    const idx   = currentIdx;
+    const q     = quizData[idx];
+
+    // プログレス
+    document.getElementById('progress-text').textContent = `第 ${idx+1} 問 / ${total}問`;
+    const pct = Math.round((idx / total) * 100);
+    document.getElementById('progress-pct').textContent  = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
+
+    document.getElementById('q-number').textContent = `Q ${idx+1}`;
+    document.getElementById('q-text').textContent   = q.q;
+
+    // 選択肢
+    const optionsEl = document.getElementById('options');
+    optionsEl.innerHTML = '';
+    const labels = ['①','②','③'];
+    q.opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerHTML = `<span class="opt-label">${labels[i]}</span><span>${opt.replace(/^[①②③]\s*/,'')}</span>`;
+      btn.onclick = () => selectAnswer(i);
+      optionsEl.appendChild(btn);
+    });
+
+    // フィードバック & 次へボタンをリセット
+    const fb = document.getElementById('feedback');
+    fb.className = '';
+    fb.textContent = '';
+    document.getElementById('next-btn-wrap').classList.add('hidden');
+  }
+
+  /* ===== 回答選択 ===== */
+  function selectAnswer(selected) {
+    const q     = quizData[currentIdx];
+    const btns  = document.querySelectorAll('.option-btn');
+    const isOk  = (selected === q.correct);
+
+    // ボタン無効化 & 色付け
+    btns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.correct) btn.classList.add('correct');
+      else if (i === selected && !isOk) btn.classList.add('wrong');
+    });
+
+    // フィードバック
+    const fb = document.getElementById('feedback');
+    if (isOk) {
+      score++;
+      fb.textContent  = q.explanation;
+      fb.className    = 'show-correct';
+      answers.push(true);
+    } else {
+      fb.textContent  = '❌ 不正解… ' + q.explanation.replace('✅ 正解！','');
+      fb.className    = 'show-wrong';
+      answers.push(false);
+    }
+
+    // ドット更新
+    renderDots();
+
+    // 次へボタン or 結果へ
+    document.getElementById('next-btn-wrap').classList.remove('hidden');
+    const nextBtn = document.querySelector('#next-btn-wrap button');
+    if (currentIdx === quizData.length - 1) {
+      nextBtn.textContent = '結果を見る 🏁';
+    } else {
+      nextBtn.textContent = '次の問題へ →';
+    }
+  }
+
+  /* ===== 次の問題 ===== */
+  function nextQuestion() {
+    currentIdx++;
+    if (currentIdx < quizData.length) {
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  /* ===== ドット描画 ===== */
+  function renderDots() {
+    const dotsEl = document.getElementById('score-dots');
+    dotsEl.innerHTML = '';
+    quizData.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'score-dot';
+      if (i < answers.length) d.classList.add(answers[i] ? 'ok' : 'ng');
+      dotsEl.appendChild(d);
+    });
+  }
+
+  /* ===== 結果表示 ===== */
+  function showResult() {
+    const passed = score >= Math.ceil(quizData.length * 0.8); // 80%以上
+    if (passed) {
+      document.getElementById('pass-score').textContent = score;
+      showScreen('pass-screen');
+    } else {
+      document.getElementById('fail-score').textContent = score;
+      showScreen('fail-screen');
+    }
+  }
+
+  /* ===== リセット ===== */
+  function resetQuiz() {
+    showScreen('start-screen');
+  }
+
+  /* ===== X（Twitter）シェア ===== */
+  function shareX() {
+    const text = `🏆川崎愛♡検定に挑戦！\n5問中${score}問正解で【名誉市民】に認定されました！\nあなたも川崎への愛を試してみて！\n#川崎愛検定 #川崎 #川崎フロンターレ #川崎大師`;
+    const url  = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+    window.open(url, '_blank');
+  }
+
+  function shareXFail() {
+    const text = `😢川崎愛♡検定に挑戦！\n5問中${score}問正解で惜しくも不合格でした…\nリベンジを誓います！川崎をもっと知りたい！\n#川崎愛検定 #川崎 #川崎フロンターレ #川崎大師`;
+    const url  = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+    window.open(url, '_blank');
+  }
+</script>
+
+</body>
+</html>
