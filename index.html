@@ -65,9 +65,9 @@ h1{font-size:30px;font-weight:900;background:linear-gradient(90deg,#00a3e0,#ff4d
     🏆 正解率<strong>80%以上</strong>で<strong>「名誉市民」</strong>に認定！
   </div>
   <div class="counter">
-    🎮 これまでの挑戦者数<br>
-    <span id="cnt" style="font-size:28px;font-weight:900;color:#ff4d94">0</span>
-    <span style="font-size:16px;color:#7a4f00"> 回</span>
+    🎮 あなたのチャレンジ回数<br>
+    <span id="cnt" style="font-size:36px;font-weight:900;color:#ff4d94;display:block;margin-top:4px">0</span>
+    <span style="font-size:13px;color:#b8860b">回</span>
   </div>
   <button class="btn btn-blue" onclick="startQuiz()">🚀 検定スタート！</button>
   <p class="footer">Powered by 川崎愛♡検定実行委員会</p>
@@ -133,8 +133,6 @@ h1{font-size:30px;font-weight:900;background:linear-gradient(90deg,#00a3e0,#ff4d
 </div>
 
 <script>
-var c=localStorage.getItem('kc')||0;
-document.getElementById('cnt').textContent=c;
 var QS=[
   {q:'川崎駅前の地下街「アゼリア」の由来になった川崎市の「市の花」は？',o:['つつじ','ひまわり','バラ'],a:0,e:'市の花は「つつじ」。アゼリアはAzalea（アザレア）が由来です。'},
   {q:'初詣の参拝客数が全国屈指の、川崎区にある有名なお寺は？',o:['浅草寺','成田山新勝寺','川崎大師（平間寺）'],a:2,e:'川崎大師は毎年300万人以上の初詣客を誇る神奈川県最大の参拝スポットです。'},
